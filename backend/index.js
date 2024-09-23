@@ -11,6 +11,7 @@ dotenv.config({
 
 const mongoURI = process.env.MONGODB_URI;
 const DBNAME = "users";
+// const DBNAME = "";
 let db;
 const connectDB = async () => {
     try {
@@ -60,6 +61,54 @@ app.get("/users", async (req, res) => {
         res.status(200).json(users);
     } catch (error) {
         res.status(500).json({message: "Internal server error"});
+    }
+});
+
+app.post("/users", async (req, res) => {
+
+    const {username, email, userAge} = req.body;
+
+    if([username, email, userAge].some(field => !field)){
+        res.status(400).json({message: "All fields are required"});
+        return;
+    }
+
+    const userObj = {
+        username,
+        email,
+        userAge
+    }
+
+    try {
+        const response = await db.collection('users').insertOne(userObj);
+        return res.status(201).json(response);
+        
+    } catch (error) {
+        res.status(500).json({message: "Internal server error"});
+    }
+});
+
+//get user by email
+app.get("/users/:email", async (req, res) => {
+
+    const {email} = req.params;
+
+    if(!email){
+        res.status(400).json({message: "Email is required"});
+        return;
+    }
+
+    try {
+        const user = await db.collection("users").findOne({email});
+
+        if(!user){
+            res.status(404).json({message: "User not found"});
+        }
+
+        res.status(200).json(user);
+
+    } catch (error) {
+        res.status(500).json({message: "Internal server error"});        
     }
 });
 
