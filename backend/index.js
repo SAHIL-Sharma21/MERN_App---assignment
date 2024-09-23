@@ -10,8 +10,8 @@ dotenv.config({
 });
 
 const mongoURI = process.env.MONGODB_URI;
-const DBNAME = "users";
-// const DBNAME = "";
+// const DBNAME = "users";
+const DBNAME = "Blog";
 let db;
 const connectDB = async () => {
     try {
@@ -111,6 +111,93 @@ app.get("/users/:email", async (req, res) => {
         res.status(500).json({message: "Internal server error"});        
     }
 });
+
+
+//REST API Design for BLOG APP
+app.post("/posts", async(res, req) => {
+    const {title, content, author} = req.body;
+
+    if([title, content, author].some(field => !field)){
+        res.status(400).json({message: "All fields are required"});
+        return;
+    }
+
+    const newPost = {
+        title,
+        content,
+        author,
+      };
+
+      try {
+        const response = await db.collection('posts').insertOne(newPost); 
+        res.status(201).json({ message: 'Post created', postId: response.insertedId }); 
+      } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+      }
+});
+
+app.get('/posts', async (req, res) => {
+    try {
+      const posts = await db.collection('posts').find({}).toArray(); 
+      res.status(200).json(posts); 
+    } catch (error) {
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
+  app.get('/posts/:id', async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      const post = await db.collection('posts').findOne({ _id: new MongoClient.ObjectId(id) }); // Find post by ID
+      if (!post) {
+        return res.status(404).json({ message: 'Post not found' });
+      }
+      res.status(200).json(post); 
+    } catch (error) {
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
+  app.put('/posts/:id', async (req, res) => {
+    const { id } = req.params;
+    const { title, content, author } = req.body;
+  
+    // Validate the request body
+    if (!title || !content || !author) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+  
+    const updatedPost = {
+      title,
+      content,
+      author,
+    };
+  
+    try {
+      const result = await db.collection('posts').updateOne({ _id: new MongoClient.ObjectId(id) }, { $set: updatedPost }); 
+      if (result.matchedCount === 0) {
+        return res.status(404).json({ message: 'Post not found' });
+      }
+      res.status(200).json({ message: 'Post updated' }); 
+    } catch (error) {
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
+  app.delete('/posts/:id', async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      const result = await db.collection('posts').deleteOne({ _id: new MongoClient.ObjectId(id) }); 
+      if (result.deletedCount === 0) {
+        return res.status(404).json({ message: 'Post not found' });
+      }
+      res.status(200).json({ message: 'Post deleted' }); 
+    } catch (error) {
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
 
 connectDB().then(() => {
     app.listen(PORT,() => {
