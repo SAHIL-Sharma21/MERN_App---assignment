@@ -1,0 +1,38 @@
+[
+    {
+        "id": 1,
+        "username": "John",
+        "email": "JohnDoe@example.com",
+        "userAge": 25
+    },
+    {
+        "id": 2,
+        "username": "Jane",
+        "email": "JaneDoe@example.com",
+        "userAge": 30
+    },
+    {
+        "id": 3,
+        "username": "Bob",
+        "email": "BobDoe@example.com",
+        "userAge": 35
+    },
+    {
+        "id": 4,
+        "username": "Alice",
+        "email": "AliceDoe@example.com",
+        "userAge": 40
+    },
+    {
+        "id": 5,
+        "username": "Charlie",
+        "email": "CharlieDoe@example.com",
+        "userAge": 45
+    },
+    {
+        "id": 6,
+        "username": "David",
+        "email": "DavidDoe@example.com",
+        "userAge": 50
+    }
+]

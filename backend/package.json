@@ -1,0 +1,27 @@
+{
+  "type": "module",
+  "name": "mern_app",
+  "version": "1.0.1",
+  "description": "A mern stack full application implenting the user requiremnets",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx nodemon index",
+    "start": "node index"
+  },
+  "keywords": [
+    "backend",
+    "nodejs",
+    "server",
+    "ReastApi",
+    "Express"
+  ],
+  "author": "Sahil sharma",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "mongodb": "^6.9.0"
+  }
+}
